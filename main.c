@@ -1,9 +1,8 @@
-#include <stdio.h>
-#include <pthread.h>
+#include "philo.h"
 
 void *print_message(void *thread_id) {
     int id = *(int *)thread_id;
-    printf("Thread %d is running\\n", id);
+    printf("Thread %d is running\n", id);
     pthread_exit(NULL);
 }
 
