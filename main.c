@@ -15,7 +15,7 @@ int main() {
     data.time_to_sleep = 300; // 300ミリ秒
 
     // フォークを初期化
-    init_forks(&data, num_philosophers);
+    init_forks(&data);
 
     // 哲学者構造体とスレッドの配列を作成
     t_philosopher philosophers[num_philosophers];

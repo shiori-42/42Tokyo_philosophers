@@ -37,14 +37,14 @@ typedef struct s_philosopher{
 } t_philosopher;
 
 
-void init_forks(t_data *data, int num_philosophers);
+void init_forks(t_data *data);
 long get_current_time();
 void *philosopher_rotine(void *argv);
 void print_status(t_philosopher *philo, char *status);
 void thinking(t_philosopher *philo);
 int take_forks(t_philosopher *philo);
 void eating(t_philosopher *philo);
-void release_forks(t_philosopher *philo);
+void put_down_forks(t_philosopher *philo);
 void sleeping(t_philosopher *philo);
 
 #endif

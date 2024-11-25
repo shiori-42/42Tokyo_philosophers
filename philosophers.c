@@ -30,7 +30,7 @@ void *philosopher_rotine(void *argv)
         thinking(philo);        // 考える
         take_forks(philo);      // フォークを取る
         eating(philo);          // 食べる
-        release_forks(philo);   // フォークを置く
+        put_down_forks(philo);   // フォークを置く
         sleeping(philo);        // 寝る
     }
     return (NULL);
