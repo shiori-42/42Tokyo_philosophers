@@ -1,45 +1,38 @@
 #include "philo.h"
 
+// 状態を表示する関数
+void print_status(t_philosopher *philo, char *status)
+{
+    // 現在時刻を取得
+    long current_time = get_current_time() - philo->data->start_time;
+
+    // 状態を更新（これが抜けていました）
+    if (strcmp(status, "is thinking") == 0)
+        philo->state = THINKING;
+    else if (strcmp(status, "is eating") == 0)
+        philo->state = EATING;
+    else if (strcmp(status, "is sleeping") == 0)
+        philo->state = SLEEPING;
+
+    // ステータスを表示
+    printf("%ld %d %s\n", current_time, philo->id + 1, status);
+}
+
+// 哲学者の行動ルーチン（スレッドとして実行される
 void *philosopher_rotine(void *argv)
 {
     // 哲学者のデータを受け取る（argを哲学者構造体に変換する）
-    t_philosopher *philosopher = (t_philosopher *)argv;
-     t_data *data = philosopher->data;  // データ構造体へのポインタを取得
+    t_philosopher *philo = (t_philosopher *)argv;
 
     // 無限ループで哲学者の行動を繰り返す
     while (1)
     {
-        // 哲学者が考え始める
-        printf("Philosopher %d is thinking\n", philosopher->id);
-
-        // 左のフォークを掴む（ロックする）
-        pthread_mutex_lock(&data->forks[philosopher->id]);
-
-        // 右のフォークを掴む（ロックする）
-        // フォークのインデックスは哲学者のID+1になるが、最後の哲学者の場合は0になる
-        pthread_mutex_lock(&data->forks[(philosopher->id + 1) % data->num_philosophers]);
-
-        // 今の時間を記録して最後に食べた時刻を更新
-        philosopher->last_meal_time = get_current_time();
-    
-        // 哲学者が食べている
-        printf("Philosopher %d is eating\n", philosopher->id);
-
-        // 食事時間だけプログラムを止める（食べるのに）かかる時間を待つ
-        usleep(data->time_to_eat * 1000);
-
-        // 左のフォークを戻す（ロック解除する）
-        pthread_mutex_unlock(&data->forks[philosopher->id]);
-
-        // 右のフォークを戻す（ロック解除する）
-        pthread_mutex_unlock(&data->forks[(philosopher->id + 1) % data->num_philosophers]);
-
-        // 哲学者が眠り始める
-        printf("Philosopher %d is sleeping\n", philosopher->id);
-
-        // 眠る時間だけプログラムを止める（眠るのに）かかる時間を待つ
-        usleep(data->time_to_sleep * 1000);
-
+        thinking(philo);        // 考える
+        take_forks(philo);      // フォークを取る
+        eating(philo);          // 食べる
+        release_forks(philo);   // フォークを置く
+        sleeping(philo);        // 寝る
     }
     return (NULL);
+
 }
