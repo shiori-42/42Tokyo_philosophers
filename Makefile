@@ -1,27 +1,23 @@
-# Makefile for Minishell
-
 NAME = philo
+
+SRCS = main.c init.c utils.c monitor.c philosophers.c philosopher_routine.c
+
+OBJS = $(SRCS:.c=.o)
+
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
-INCLUDES = -I./include
-SRCS = main.c mutex.c philosophers.c philosopher_rotine.c utils.c 
-OBJS = $(SRCS:.c=.o)
-RM = rm -f 
-
-.PHONY: all clean fclean re
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
 clean:
-	$(RM) $(OBJS)
+	rm -f $(OBJS)
 
 fclean: clean
-	$(RM) $(NAME)
+	rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re

@@ -1,38 +1,29 @@
 #include "philo.h"
 
-// 状態を表示する関数
 void print_status(t_philosopher *philo, char *status)
 {
-    // 現在時刻を取得
-    long current_time = get_current_time() - philo->data->start_time;
-
-    // 状態を更新（これが抜けていました）
-    if (strcmp(status, "is thinking") == 0)
-        philo->state = THINKING;
-    else if (strcmp(status, "is eating") == 0)
-        philo->state = EATING;
-    else if (strcmp(status, "is sleeping") == 0)
-        philo->state = SLEEPING;
-
-    // ステータスを表示
-    printf("%ld %d %s\n", current_time, philo->id + 1, status);
+    pthread_mutex_lock(&philo->data->print_mutex);
+    if (!philo->data->someone_died && !philo->data->all_satisfied)
+        printf("%ld %d %s\n", 
+            get_current_time() - philo->data->start_time,
+            philo->id + 1, status);
+    pthread_mutex_unlock(&philo->data->print_mutex);
 }
 
-// 哲学者の行動ルーチン（スレッドとして実行される
-void *philosopher_rotine(void *argv)
+void *philosopher_routine(void *arg)
 {
-    // 哲学者のデータを受け取る（argを哲学者構造体に変換する）
-    t_philosopher *philo = (t_philosopher *)argv;
+    t_philosopher *philo;
 
-    // 無限ループで哲学者の行動を繰り返す
-    while (1)
+    philo = (t_philosopher *)arg;
+    if (philo->id % 2)
+        my_sleep(1);
+    while (!philo->data->someone_died && !philo->data->all_satisfied)
     {
-        thinking(philo);        // 考える
-        take_forks(philo);      // フォークを取る
-        eating(philo);          // 食べる
-        put_down_forks(philo);   // フォークを置く
-        sleeping(philo);        // 寝る
+        thinking(philo);
+        take_forks(philo);
+        eating(philo);
+        put_down_forks(philo);
+        sleeping(philo);
     }
     return (NULL);
-
 }
